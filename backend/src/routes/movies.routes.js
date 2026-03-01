@@ -2,6 +2,13 @@ import express from "express";
 import { movies } from "../data/movies.data.js";
 import { normalize } from "../utils/normalize.js";
 
+function parseMovieId(value) {
+const clean = value.trim();    
+const parsed = Number(value);
+return Number.isNaN(parsed) ? null : parsed;
+}
+
+
 const router = express.Router();
 
 router.get("/search", (req, res) => {
@@ -23,20 +30,20 @@ router.get("/search", (req, res) => {
         });      
     }
 const results = movies.filter((m) => {
-    const mTitle = normalize(m.title);
-    const mDirector = normalize(m.director);
-    const mCastJoined = normalize(m.cast.join(" "));
+    const movieTitle = normalize(m.title);
+    const movieDirector = normalize(m.director);
+    const movieCastJoined = normalize(m.cast.join(" "));
 
     const matchesQ = 
    !filters.q ||
-   mTitle.includes(filters.q) ||
-   mDirector.includes(filters.q) ||
-   mCastJoined.includes(filters.q);
+   movieTitle.includes(filters.q) ||
+   movieDirector.includes(filters.q) ||
+   movieCastJoined.includes(filters.q);
 
 
-    const matchesTitle = !filters.title || mTitle.includes(filters.title);
-    const matchesActor = !filters.actor || mCastJoined.includes(filters.actor);
-    const matchesDirector = !filters.director || mDirector.includes(filters.director);
+    const matchesTitle = !filters.title || movieTitle.includes(filters.title);
+    const matchesActor = !filters.actor || movieCastJoined.includes(filters.actor);
+    const matchesDirector = !filters.director || movieDirector.includes(filters.director);
 
     return matchesQ && matchesTitle && matchesActor && matchesDirector;
 });
@@ -54,5 +61,29 @@ return res.json({
 });
 });
 
+router.get("/:id/credits", (req, res) => {
+    const movieId = parseMovieId(req.params.id);
+
+    if (movieId == null) {
+
+    if(Number.isNaN(movieId)) {
+        return res.status(400).json({ message: "id must be a number"});
+    }
+    const movie = movies.find((m) => m.id === movieId);
+
+    if (!movie) {
+        return res.status(404).json({ message: "movie not found." });
+    }
+
+    return res.json({
+        id: movie.id,
+        title: movie.title,
+        Countcrew: movie.crew?.length ?? 0,
+        Countcast: movie.cast.length ?? 0,
+        cast: movie.cast ?? [],
+        crew: movie.crew ?? [],
+        director: movie.director ?? [],
+    });
+}});
 
 export default router;
