@@ -2,8 +2,7 @@ import express from "express";
 import { movies } from "../data/movies.data.js";
 import { normalize } from "../utils/normalize.js";
 
-function parseMovieId(value) {
-const clean = value.trim();    
+function parseMovieId(value) {    
 const parsed = Number(value);
 return Number.isNaN(parsed) ? null : parsed;
 }
@@ -22,10 +21,10 @@ router.get("/search", (req, res) => {
     };
 
     const noFilters = Object.values(filters).every((v) => v === "");
+
     if (noFilters) {
         return res.status(400).json({
-            message:
-            "Provide at least one of the following: q, title, directot, or actor.",
+            message: "Provide at least one of the following: q, title, directot, or actor.",
             
         });      
     }
@@ -56,7 +55,7 @@ const searchresults = results.map((m) => ({
 }));
 
 return res.json({
-    count: results.length,
+    count: searchresults.length,
     results: searchresults,
 });
 });
@@ -65,10 +64,9 @@ router.get("/:id/credits", (req, res) => {
     const movieId = parseMovieId(req.params.id);
 
     if (movieId == null) {
-
-    if(Number.isNaN(movieId)) {
         return res.status(400).json({ message: "id must be a number"});
     }
+
     const movie = movies.find((m) => m.id === movieId);
 
     if (!movie) {
@@ -82,8 +80,34 @@ router.get("/:id/credits", (req, res) => {
         Countcast: movie.cast.length ?? 0,
         cast: movie.cast ?? [],
         crew: movie.crew ?? [],
-        director: movie.director ?? [],
     });
-}});
+});
+
+router.get("/:id", (req, res) => {
+const paramId = parseMovieId(req.params.id);
+
+if (paramId === null) {
+    return res.status(400).json({ message: "Movie id should be a number." });
+}
+
+
+const movie = movies.find((ItemMovie) => 
+    ItemMovie.id === paramId);
+
+if (!movie) {
+    return res.status(404).json({ message: "Movie not found." });
+}
+
+return res.json({
+    id: movie.id,
+    title: movie.title,
+    releaseYear: movie.releaseYear,
+    genres: movie.genres,
+    director: movie.director,
+    revenue: movie.revenue,
+    overview: movie.overview,
+});
+});
+
 
 export default router;
