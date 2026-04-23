@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Reel Room</title>
+  <link rel="stylesheet" href="TRR_css.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <a href="TRR_2.html" class="logo-link">
+      <img src="TRR_Logo.png" alt="The Reel Room Logo" class="logo-image">
+    </a>
+
+    <div class="search-area">
+      <input type="text" class="search-input" placeholder="Search a movie, actor, or director...">
+      <button class="search-btn">Search</button>
+    </div>
+
+    <div class="profile-area">
+      <select class="profile-dropdown">
+        <option>Create profile</option>
+        <option>Log in</option>
+        <option>Log out</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- Main Title -->
+  <section class="hero">
+    <div class="hero-logo">
+      <span class="hero-main">THE REEL</span>
+      <span class="hero-sub">. ROOM .</span>
+    </div>
+    <h1>The Reel Room</h1>
+  </section>
+
+  <!-- Empty content area -->
+  <main class="content-area">
+    <!-- Add your sections here later -->
+  </main>
+
+  <!-- Scroll button -->
+  <button class="scroll-top-btn" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+    ↑
+  </button>
+
+</body>
+</html>
